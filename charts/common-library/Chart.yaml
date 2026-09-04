@@ -1,0 +1,6 @@
+apiVersion: v2
+name: common-library
+description: Corporate shared Helm Library Chart providing standard templates for microservices
+type: library
+version: 1.0.0
+appVersion: "1.0.0"

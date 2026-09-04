@@ -1,0 +1,38 @@
+name: Release Common Library Helm Chart
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'charts/common-library/**'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+
+      - name: Validate Library Chart (Lint)
+        run: helm lint charts/common-library
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Package and Push Chart to GHCR
+        run: |
+          helm package charts/common-library
+          PACKAGE_NAME=$(ls common-library-*.tgz | head -n 1)
+          helm push "$PACKAGE_NAME" oci://ghcr.io/${{ github.repository_owner }}/helm-charts
