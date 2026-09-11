@@ -47,13 +47,18 @@ env:
   - name: INGEST_PORT
     value: "8001"
   - name: POSTGRES_HOST
-    value: "postgres.photoblog.svc.cluster.local"
+    value: "postgres.mcp.svc.cluster.local"
   - name: POSTGRES_PORT
     value: "5432"
   - name: POSTGRES_DB
-    value: "photoblog"
+    value: "mcp"
   - name: POSTGRES_USER
-    value: "photoblog"
+    value: "mcp"
+  - name: POSTGRES_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: postgres-secret
+        key: postgres-password
   - name: EMBEDDING_MODEL
     value: "BAAI/bge-m3"
   - name: EMBEDDING_DIM
