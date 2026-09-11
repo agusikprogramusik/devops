@@ -1,0 +1,10 @@
+apiVersion: v2
+name: mcp-knowledge-server
+description: Helm chart for Central Model Context Protocol (MCP) Knowledge & Docs-as-Code Ingestion Server
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+dependencies:
+  - name: common-library
+    version: "1.0.0"
+    repository: "file://../common-library"
