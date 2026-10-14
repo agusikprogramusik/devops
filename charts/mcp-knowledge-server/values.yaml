@@ -3,9 +3,10 @@ replicaCount: 2
 image:
   repository: ghcr.io/agusikprogramusik/mcp-knowledge-server
   pullPolicy: IfNotPresent
-  tag: "0.1.1"
+  tag: "0.1.2"
 
-imagePullSecrets: []
+imagePullSecrets:
+  - name: ghcr-secret
 nameOverride: ""
 fullnameOverride: "mcp-knowledge-server"
 
@@ -59,6 +60,7 @@ env:
       secretKeyRef:
         name: postgres-secret
         key: postgres-password
+        optional: true
   - name: EMBEDDING_MODEL
     value: "BAAI/bge-m3"
   - name: EMBEDDING_DIM
@@ -69,6 +71,7 @@ env:
 envFrom:
   - secretRef:
       name: postgres-secret
+      optional: true
 
 livenessProbe:
   httpGet:
