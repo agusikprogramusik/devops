@@ -5,6 +5,14 @@ All notable changes to the **devops** repository will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] - 2026-10-14
+
+### Changed
+- **TEI Memory Allocation**: Increased memory limit to `5Gi` (request `2.5Gi`) for Hugging Face TEI pod to accommodate ONNX layer runtime buffers during `BAAI/bge-m3` model warm-up and prevent cgroup OOMKilled errors.
+- Bumped `mcp-knowledge-server` chart version to `0.2.2`.
+
+---
+
 ## [0.3.1] - 2026-10-14
 
 ### Fixed
