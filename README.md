@@ -111,26 +111,32 @@ Whenever changes to `charts/common-library/**` are merged to `main`:
 
 Location: [`charts/mcp-knowledge-server`](charts/mcp-knowledge-server)
 
-Deploys the central **Model Context Protocol (MCP)** server alongside a dedicated **Hugging Face Text Embeddings Inference (TEI)** microservice in namespace `ai-platform`.
+Deploys the central **Model Context Protocol (MCP)** server alongside a dedicated **Hugging Face Text Embeddings Inference (TEI)** microservice and PostgreSQL 18 with `pgvector` in namespace `ai-platform`.
 
 ```mermaid
 flowchart LR
     subgraph K8s["Kubernetes (ai-platform namespace)"]
         subgraph Serving["MCP Knowledge Server"]
-            MCP["mcp-knowledge-server (2 replicas)\nImage: ghcr.io/agusikprogramusik/mcp-knowledge-server:0.2.0\nMemory: 256Mi | Port: 8000"]
+            MCP["mcp-knowledge-server (2 replicas)\nImage: ghcr.io/agusikprogramusik/mcp-knowledge-server:0.4.1\nMemory: 256Mi | Port: 8000\nEndpoints: /mcp (Streamable), /sse"]
         end
         subgraph Inference["Inference Subsystem (Method B)"]
             TEI["mcp-knowledge-server-tei (1 replica)\nImage: ghcr.io/huggingface/text-embeddings-inference:cpu-latest\nModel: BAAI/bge-m3 | Memory Limit: 6Gi\nMax Batch Tokens: 1024 | Max Client Batch: 8"]
         end
+        subgraph Storage["Vector & Full-Text Store"]
+            PG[("PostgreSQL 18 + pgvector\nHNSW (<=>) + GIN FTS (RRF)")]
+        end
         MCP -->|"HTTP POST /embed (port 80)"| TEI
+        MCP <-->|"Hybrid Search RRF"| PG
     end
 ```
 
 ### Key Values Configuration:
+* `image.tag: "0.4.1"`
 * `tei.enabled: true`
 * `tei.modelId: "BAAI/bge-m3"`
 * `tei.maxBatchTokens: 1024` (calibrated to prevent ONNX warmup OOM)
 * `tei.maxClientBatchSize: 8`
 * `tei.resources.limits.memory: 6Gi` (request `3Gi`)
+* `postgres.enabled: true` (PostgreSQL 18 + pgvector 0.8.7)
 
 
