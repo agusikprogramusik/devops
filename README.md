@@ -105,3 +105,32 @@ Whenever changes to `charts/common-library/**` are merged to `main`:
 2. The runner logs in to GitHub Container Registry (`ghcr.io`).
 3. The chart package is created and pushed as an OCI artifact to `oci://ghcr.io/agusikprogramusik/helm-charts`.
 
+---
+
+## Application Chart: `mcp-knowledge-server`
+
+Location: [`charts/mcp-knowledge-server`](charts/mcp-knowledge-server)
+
+Deploys the central **Model Context Protocol (MCP)** server alongside a dedicated **Hugging Face Text Embeddings Inference (TEI)** microservice in namespace `ai-platform`.
+
+```mermaid
+flowchart LR
+    subgraph K8s["Kubernetes (ai-platform namespace)"]
+        subgraph Serving["MCP Knowledge Server"]
+            MCP["mcp-knowledge-server (2 replicas)\nImage: ghcr.io/agusikprogramusik/mcp-knowledge-server:0.2.0\nMemory: 256Mi | Port: 8000"]
+        end
+        subgraph Inference["Inference Subsystem (Method B)"]
+            TEI["mcp-knowledge-server-tei (1 replica)\nImage: ghcr.io/huggingface/text-embeddings-inference:cpu-latest\nModel: BAAI/bge-m3 | Memory Limit: 6Gi\nMax Batch Tokens: 1024 | Max Client Batch: 8"]
+        end
+        MCP -->|"HTTP POST /embed (port 80)"| TEI
+    end
+```
+
+### Key Values Configuration:
+* `tei.enabled: true`
+* `tei.modelId: "BAAI/bge-m3"`
+* `tei.maxBatchTokens: 1024` (calibrated to prevent ONNX warmup OOM)
+* `tei.maxClientBatchSize: 8`
+* `tei.resources.limits.memory: 6Gi` (request `3Gi`)
+
+
