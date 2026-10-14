@@ -5,6 +5,14 @@ All notable changes to the **devops** repository will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2026-10-14
+
+### Fixed
+- **TEI Startup Probe**: Added dedicated Kubernetes `startupProbe` with 350-second tolerance window to allow downloading large Hugging Face model weights (`BAAI/bge-m3`) without prematurely triggering liveness probe termination (Exit Code 137).
+- Bumped `mcp-knowledge-server` chart version to `0.2.1`.
+
+---
+
 ## [0.3.0] - 2026-10-14
 
 ### Added
