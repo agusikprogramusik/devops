@@ -134,8 +134,8 @@ tei:
     pullPolicy: IfNotPresent
   replicaCount: 1
   modelId: "BAAI/bge-m3"
-  maxBatchTokens: 4096
-  maxClientBatchSize: 16
+  maxBatchTokens: 1024
+  maxClientBatchSize: 8
   resources:
     requests:
       cpu: 500m

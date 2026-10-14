@@ -5,6 +5,14 @@ All notable changes to the **devops** repository will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.4] - 2026-10-14
+
+### Changed
+- **TEI Attention Buffer Calibration**: Set `--max-batch-tokens 1024` and `--max-client-batch-size 8` for `BAAI/bge-m3` in Hugging Face TEI. This maintains the 6Gi RAM ceiling while reducing the quadratic attention score tensor allocation from ~1.07GB per layer down to ~67MB per layer, preventing ONNX runtime warmup OOM on CPU.
+- Bumped `mcp-knowledge-server` chart version to `0.2.4`.
+
+---
+
 ## [0.3.3] - 2026-10-14
 
 ### Changed
