@@ -32,8 +32,10 @@ spec:
             - {{ .Values.tei.modelId | quote }}
             - --port
             - {{ .Values.tei.port | default 80 | quote }}
+            - --max-batch-tokens
+            - {{ .Values.tei.maxBatchTokens | default 4096 | quote }}
             - --max-client-batch-size
-            - "32"
+            - {{ .Values.tei.maxClientBatchSize | default 16 | quote }}
           ports:
             - name: http
               containerPort: {{ .Values.tei.port | default 80 }}
