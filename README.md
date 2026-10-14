@@ -117,7 +117,7 @@ Deploys the central **Model Context Protocol (MCP)** server alongside a dedicate
 flowchart LR
     subgraph K8s["Kubernetes (ai-platform namespace)"]
         subgraph Serving["MCP Knowledge Server"]
-            MCP["mcp-knowledge-server (2 replicas)\nImage: ghcr.io/agusikprogramusik/mcp-knowledge-server:0.4.1\nMemory: 256Mi | Port: 8000\nEndpoints: /mcp (Streamable), /sse"]
+            MCP["mcp-knowledge-server (2 replicas)\nImage: ghcr.io/agusikprogramusik/mcp-knowledge-server:0.4.2\nMemory: 256Mi | Port: 8000\nEndpoints: /mcp (Streamable), /sse"]
         end
         subgraph Inference["Inference Subsystem (Method B)"]
             TEI["mcp-knowledge-server-tei (1 replica)\nImage: ghcr.io/huggingface/text-embeddings-inference:cpu-latest\nModel: BAAI/bge-m3 | Memory Limit: 6Gi\nMax Batch Tokens: 1024 | Max Client Batch: 8"]
@@ -131,7 +131,7 @@ flowchart LR
 ```
 
 ### Key Values Configuration:
-* `image.tag: "0.4.1"`
+* `image.tag: "0.4.2"`
 * `tei.enabled: true`
 * `tei.modelId: "BAAI/bge-m3"`
 * `tei.maxBatchTokens: 1024` (calibrated to prevent ONNX warmup OOM)
