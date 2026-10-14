@@ -8,7 +8,7 @@ This repository provides reusable, enterprise-grade Helm Library Charts (`type: 
 
 In traditional Helm setups, each microservice copies hundreds of lines of YAML boilerplate (`deployment.yaml`, `service.yaml`, `hpa.yaml`, etc.). 
 
-With the **Helm Library Chart pattern**, the entire Kubernetes specification is encapsulated in reusable Go template definitions within `charts/common-library`. Downstream application charts (such as `photoblog-helm-charts`) simply declare a dependency on `common-library` and invoke templates with a single line:
+With the **Helm Library Chart pattern**, the entire Kubernetes specification is encapsulated in reusable Go template definitions within `charts/common-library`. Downstream application charts (such as `order-service-chart` or `payment-service-chart`) simply declare a dependency on `common-library` and invoke templates with a single line:
 
 ```yaml
 {{- include "common.deployment" . -}}
