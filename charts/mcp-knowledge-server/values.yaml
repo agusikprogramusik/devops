@@ -48,19 +48,15 @@ env:
   - name: INGEST_PORT
     value: "8001"
   - name: POSTGRES_HOST
-    value: "postgres.mcp.svc.cluster.local"
+    value: "mcp-knowledge-server-postgres"
   - name: POSTGRES_PORT
     value: "5432"
   - name: POSTGRES_DB
-    value: "mcp"
+    value: "knowledge_db"
   - name: POSTGRES_USER
-    value: "mcp"
+    value: "postgres"
   - name: POSTGRES_PASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: postgres-secret
-        key: postgres-password
-        optional: true
+    value: "postgres_password"
   - name: EMBEDDING_API_URL
     value: "http://mcp-knowledge-server-tei:80"
   - name: EMBEDDING_MODEL
@@ -68,12 +64,7 @@ env:
   - name: EMBEDDING_DIM
     value: "1024"
   - name: STORAGE_BACKEND
-    value: "auto"
-
-envFrom:
-  - secretRef:
-      name: postgres-secret
-      optional: true
+    value: "postgres"
 
 livenessProbe:
   httpGet:
@@ -143,4 +134,30 @@ tei:
     limits:
       cpu: 2000m
       memory: 6Gi
+
+# Dedicated PostgreSQL 18 with pgvector Database Subsystem
+postgres:
+  enabled: true
+  image:
+    repository: pgvector/pgvector
+    tag: "pg18"
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  database: "knowledge_db"
+  user: "postgres"
+  password: "postgres_password"
+  service:
+    port: 5432
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  persistence:
+    enabled: true
+    size: 2Gi
+    storageClass: "standard"
+
 

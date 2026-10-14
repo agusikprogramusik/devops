@@ -5,6 +5,15 @@ All notable changes to the **devops** repository will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-10-14
+
+### Added
+- **PostgreSQL 18 + pgvector Subsystem**: Added dedicated PostgreSQL 18 deployment, ClusterIP service, and persistent volume claim using official bleeding-edge `pgvector/pgvector:pg18` image.
+- **Enterprise Vector Storage**: Switched `mcp-knowledge-server` default storage backend to `postgres` with native `vector(1024)` column types and HNSW cosine distance indexing (`m=16, ef_construction=64`).
+- Bumped `mcp-knowledge-server` chart version to `0.3.0`.
+
+---
+
 ## [0.3.4] - 2026-10-14
 
 ### Changed
