@@ -19,6 +19,7 @@ serviceAccount:
 podAnnotations: {}
 podLabels:
   app.kubernetes.io/part-of: ai-platform
+  app.kubernetes.io/component: server
 
 podSecurityContext:
   runAsNonRoot: true

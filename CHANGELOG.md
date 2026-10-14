@@ -5,6 +5,14 @@ All notable changes to the **devops** repository will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.2] - 2026-10-14
+
+### Fixed
+- **Service Component Selector Isolation**: Added explicit `app.kubernetes.io/component: server` label and selector to `mcp-knowledge-server` Service and Deployment to isolate serving tier traffic from `embedding-engine` (TEI) and `postgres` sub-components.
+- Bumped chart version to `0.3.2`.
+
+---
+
 ## [0.4.1] - 2026-10-14
 
 ### Changed
