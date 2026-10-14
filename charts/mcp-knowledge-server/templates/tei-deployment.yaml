@@ -44,11 +44,17 @@ spec:
           volumeMounts:
             - name: model-cache
               mountPath: /data
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 35
           livenessProbe:
             httpGet:
               path: /health
               port: http
-            initialDelaySeconds: 45
             periodSeconds: 15
             timeoutSeconds: 5
             failureThreshold: 3
@@ -56,7 +62,6 @@ spec:
             httpGet:
               path: /health
               port: http
-            initialDelaySeconds: 20
             periodSeconds: 10
             timeoutSeconds: 3
             failureThreshold: 3
