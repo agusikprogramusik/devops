@@ -1,0 +1,68 @@
+{{- if .Values.tei.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "common.fullname" . }}-tei
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    app.kubernetes.io/component: embedding-engine
+spec:
+  replicas: {{ .Values.tei.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      {{- include "common.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: embedding-engine
+  template:
+    metadata:
+      labels:
+        {{- include "common.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: embedding-engine
+        app.kubernetes.io/part-of: ai-platform
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: tei
+          image: "{{ .Values.tei.image.repository }}:{{ .Values.tei.image.tag }}"
+          imagePullPolicy: {{ .Values.tei.image.pullPolicy | default "IfNotPresent" }}
+          args:
+            - --model-id
+            - {{ .Values.tei.modelId | quote }}
+            - --port
+            - {{ .Values.tei.port | default 80 | quote }}
+            - --max-client-batch-size
+            - "32"
+          ports:
+            - name: http
+              containerPort: {{ .Values.tei.port | default 80 }}
+              protocol: TCP
+          env:
+            - name: HUGGINGFACE_HUB_CACHE
+              value: /data
+          volumeMounts:
+            - name: model-cache
+              mountPath: /data
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 45
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.tei.resources | nindent 12 }}
+      volumes:
+        - name: model-cache
+          emptyDir: {}
+{{- end }}

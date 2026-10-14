@@ -3,7 +3,7 @@ replicaCount: 2
 image:
   repository: ghcr.io/agusikprogramusik/mcp-knowledge-server
   pullPolicy: IfNotPresent
-  tag: "0.1.4"
+  tag: "0.2.0"
 
 imagePullSecrets:
   - name: ghcr-secret
@@ -61,6 +61,8 @@ env:
         name: postgres-secret
         key: postgres-password
         optional: true
+  - name: EMBEDDING_API_URL
+    value: "http://mcp-knowledge-server-tei:80"
   - name: EMBEDDING_MODEL
     value: "BAAI/bge-m3"
   - name: EMBEDDING_DIM
@@ -122,3 +124,22 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 5
   targetCPUUtilizationPercentage: 80
+
+# Hugging Face TEI (Text Embeddings Inference) Microservice (Method B)
+tei:
+  enabled: true
+  image:
+    repository: ghcr.io/huggingface/text-embeddings-inference
+    tag: "cpu-latest"
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  modelId: "BAAI/bge-m3"
+  port: 80
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1.5Gi
+    limits:
+      cpu: 2000m
+      memory: 3Gi
+

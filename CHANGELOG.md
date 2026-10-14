@@ -5,6 +5,17 @@ All notable changes to the **devops** repository will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-10-14
+
+### Added
+- **Hugging Face Text Embeddings Inference (TEI) Service (Method B)**:
+  - Added dedicated TEI Kubernetes Deployment and Service templates in `charts/mcp-knowledge-server` (`tei-deployment.yaml`, `tei-service.yaml`).
+  - Added `tei` configuration block in `values.yaml` targeting `ghcr.io/huggingface/text-embeddings-inference:cpu-latest` with `BAAI/bge-m3` model.
+  - Injected `EMBEDDING_API_URL: http://mcp-knowledge-server-tei:80` into MCP knowledge server container environment.
+  - Bumped `mcp-knowledge-server` chart version and image tag to `0.2.0`.
+
+---
+
 ## [0.2.3] - 2026-10-14
 
 ### Changed
