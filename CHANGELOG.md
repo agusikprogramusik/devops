@@ -5,6 +5,35 @@ All notable changes to the **devops** repository will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.5] - 2026-10-15
+
+### Added
+- **Repository Re-indexing Script**: Added `reindex_repos.py` to re-embed all existing documentation using the new `BAAI/bge-small-en-v1.5` model (384-dimensional).
+  - Automatically scans repositories for markdown files
+  - Processes documentation through intelligent chunking (1000 token chunks, 50 token overlap)
+  - Embeds chunks using TEI service with content hashing for deduplication
+  - Supports dry-run mode for verification
+  - Usage: `python reindex_repos.py [--dry-run] [--repos-pattern PATH]`
+
+### Changed
+- **TEI Model**: Migrated from `BAAI/bge-m3` (1024-dim) to `BAAI/bge-small-en-v1.5` (384-dim) across all codebase references.
+  - Updated `ingest.py`, `embeddings.py`, `config.py`, `chunking.py`
+  - Updated `values.yaml` and `tei-deployment.yaml`
+  - Updated `ARCHITECTURE_DIAGRAMS.md` and `rag-mcp-k8s-blueprint.md`
+  - Updated `macro-system-documentation-standard.md`
+- **Dimensionality**: Reduced embedding dimensionality from 1024 to 384, decreasing storage requirements by ~63%.
+
+### Fixed
+- **Whitespace Issues**: Corrected hidden whitespace/carriage return characters in `rag-mcp-k8s-blueprint.md` using targeted `sed` commands.
+- **TEI Configuration**: Updated batch parameters to match new model requirements (`--max-batch-tokens 2048`, `--max-client-batch-size 16`).
+
+### Changed
+- Bumped `mcp-knowledge-server` image tag and chart to `0.4.2`:
+  - Added Streamable HTTP `/mcp` route.
+  - Added graceful 204 response for MCP `notifications/*` requests.
+
+---
+
 ## [0.4.4] - 2026-10-14
 
 ### Changed
