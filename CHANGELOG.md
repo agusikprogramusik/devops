@@ -5,6 +5,14 @@ All notable changes to the **devops** repository will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.6] - 2026-10-22
+
+### Changed
+- **MCP Knowledge Server Exposure (`charts/mcp-knowledge-server` v0.5.1)**:
+  - Changed default `service.type` from `ClusterIP` to `NodePort` with static `nodePort: 30800` so Minikube exposes the MCP endpoint immediately upon cluster startup at `192.168.49.2:30800`.
+
+---
+
 ## [0.4.5] - 2026-10-15
 
 ### Added
