@@ -10,6 +10,9 @@ spec:
   ports:
     - port: {{ .Values.service.port | default 8000 }}
       targetPort: {{ .Values.service.targetPort | default 8000 }}
+      {{- if and (eq (.Values.service.type | default "ClusterIP") "NodePort") .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
       protocol: TCP
       name: http
   selector:
