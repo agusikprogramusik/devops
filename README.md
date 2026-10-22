@@ -117,10 +117,10 @@ Deploys the central **Model Context Protocol (MCP)** server alongside a dedicate
 flowchart LR
     subgraph K8s["Kubernetes (ai-platform namespace)"]
         subgraph Serving["MCP Knowledge Server"]
-            MCP["mcp-knowledge-server (2 replicas)\nImage: ghcr.io/agusikprogramusik/mcp-knowledge-server:0.4.2\nMemory: 256Mi | Port: 8000\nEndpoints: /mcp (Streamable), /sse"]
+            MCP["mcp-knowledge-server (2 replicas)\nImage: ghcr.io/agusikprogramusik/mcp-knowledge-server:0.5.0\nMemory: 256Mi | Port: 8000\nEndpoints: /mcp (Streamable), /sse"]
         end
         subgraph Inference["Inference Subsystem (Method B)"]
-            TEI["mcp-knowledge-server-tei (1 replica)\nImage: ghcr.io/huggingface/text-embeddings-inference:cpu-latest\nModel: BAAI/bge-m3 | Memory Limit: 6Gi\nMax Batch Tokens: 1024 | Max Client Batch: 8"]
+            TEI["mcp-knowledge-server-tei (1 replica)\nImage: ghcr.io/huggingface/text-embeddings-inference:cpu-latest\nModel: BAAI/bge-small-en-v1.5 | Memory Limit: 2Gi\nMax Batch Tokens: 2048 | Max Client Batch: 16"]
         end
         subgraph Storage["Vector & Full-Text Store"]
             PG[("PostgreSQL 18 + pgvector\nHNSW (<=>) + GIN FTS (RRF)")]
@@ -131,12 +131,40 @@ flowchart LR
 ```
 
 ### Key Values Configuration:
-* `image.tag: "0.4.2"`
+* `image.tag: "0.5.0"`
 * `tei.enabled: true`
-* `tei.modelId: "BAAI/bge-m3"`
-* `tei.maxBatchTokens: 1024` (calibrated to prevent ONNX warmup OOM)
-* `tei.maxClientBatchSize: 8`
-* `tei.resources.limits.memory: 6Gi` (request `3Gi`)
+* `tei.modelId: "BAAI/bge-small-en-v1.5"`
+* `tei.maxBatchTokens: 2048` (optimized for English-optimized model)
+* `tei.maxClientBatchSize: 16`
+* `tei.resources.limits.memory: 2Gi` (request `1Gi`)
 * `postgres.enabled: true` (PostgreSQL 18 + pgvector 0.8.7)
 
+
+
+## Re-indexing Documentation
+
+### Repository Re-indexing Script
+
+Located at [`mcp-knowledge-server/reindex_repos.py`](../mcp-knowledge-server/reindex_repos.py)
+
+The script re-indexes all documentation files using the configured embedding model (`BAAI/bge-small-en-v1.5`):
+
+```bash
+# Re-index all repositories in workspace
+cd mcp-knowledge-server
+python reindex_repos.py
+
+# Wipe store first and perform a clean re-index
+python reindex_repos.py --clean
+
+# Re-index specific services in custom workspace
+python reindex_repos.py --workspace /path/to/workspace --services devops photoblog
+```
+
+**Features:**
+- Automatically scans workspace for service `docs/` and `README.md` files
+- Fully configurable via `.env` or environment variables (`EMBEDDING_API_URL`, `POSTGRES_*`, `WORKSPACE_ROOT`)
+- Batched inference via Hugging Face Text Embeddings Inference (TEI)
+- Automatic PostgreSQL pgvector dimension migration detection (384-dim)
+- Supports clean store wipe (`--clean`) and hash bypass (`--force`)
 
